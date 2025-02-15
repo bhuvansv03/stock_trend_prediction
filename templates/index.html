@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Trend Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin-top: 50px;
+        }
+        .chart-container {
+            margin-top: 30px;
+        }
+        .table-responsive {
+            margin-top: 20px;
+        }
+        .download-link {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Stock Trend Prediction</h1>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="stock" class="form-label">Enter Stock Ticker:</label>
+                <input type="text" class="form-control" id="stock" name="stock" value="AAPL">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        
+        {% if plot_path_ema_20_50 %}
+        <div class="chart-container">
+            <h3>Closing Price vs Time (20 & 50 Days EMA)</h3>
+            <img src="{{ url_for('static', filename='ema_20_50.png') }}" class="img-fluid" alt="EMA 20 & 50">
+        </div>
+        {% endif %}
+        
+        {% if plot_path_ema_100_200 %}
+        <div class="chart-container">
+            <h3>Closing Price vs Time (100 & 200 Days EMA)</h3>
+            <img src="{{ url_for('static', filename='ema_100_200.png') }}" class="img-fluid" alt="EMA 100 & 200">
+        </div>
+        {% endif %}
+        
+        {% if plot_path_rsi %}
+        <div class="chart-container">
+            <h3>Relative Strength Index (RSI)</h3>
+            <h5>Measures Momentum - Above 70: Overbought (price may fall soon), Below 30: Oversold (price may rise soon)</h5>
+            <img src="{{ url_for('static', filename='rsi.png') }}" class="img-fluid" alt="RSI">
+        </div>
+        {% endif %}
+
+        {% if plot_path_macd %}
+        <div class="chart-container">
+            <h3>MACD vs Signal Line</h3>
+            <h5>Measures Trend Strength - Above Signal Line: Bullish (Buy), Below Signal Line: Bearish (Sell)</h5>
+            <img src="{{ url_for('static', filename='macd.png') }}" class="img-fluid" alt="MACD">
+        </div>
+        {% endif %}
+
+        {% if plot_path_bb %}
+        <div class="chart-container">
+            <h3>Bollinger Bands</h3>
+            <h5>Measures Volatility - Price touches Upper Band: Overbought (Potential sell), Price touches Lower Band: Oversold (Potential buy), 
+                Bands Widen: Increased volatility, Bands Contract: Decreased volatility</h5>
+            <img src="{{ url_for('static', filename='bollinger_bands.png') }}" class="img-fluid" alt="Bollinger Bands">
+        </div>
+        {% endif %}
+
+        {% if plot_path_roc %}
+        <div class="chart-container">
+            <h3>Rate of Change (ROC)</h3>
+            <h5>Measures Momentum - ROC > 0: Positive momentum (price is rising), ROC < 0: Negative momentum (price is falling),
+                Sharp rise in ROC: Strong buying pressure, Sharp drop in ROC: Strong selling pressure</h5>
+            <img src="{{ url_for('static', filename='roc.png') }}" class="img-fluid" alt="ROC">
+        </div>
+        {% endif %}
+
+        {% if plot_path_obv %}
+        <div class="chart-container">
+            <h3>On-Balance Volume (OBV)</h3>
+            <h5>Measures Volume-based Buying and Selling Pressure - OBV rising: Strong buying pressure (bullish signal), OBV falling: Strong selling pressure (bearish signal), 
+                Divergence (OBV up, price down): Price may reverse upwards</h5>
+            <img src="{{ url_for('static', filename='obv.png') }}" class="img-fluid" alt="OBV">
+        </div>
+        {% endif %}
+
+        {% if plot_path_prediction %}
+        <div class="chart-container">
+            <h3>Prediction vs Original Trend</h3>
+            <h5>Prediction Based on LSTM Model</h5>
+            <img src="{{ url_for('static', filename='stock_prediction.png') }}" class="img-fluid" alt="Prediction vs Original">
+        </div>
+        {% endif %}
+
+        {% if data_desc %}
+        <div class="table-responsive">
+            <h3 class="mt-4">Descriptive Data from Jan 2000 to Dec 2024</h3>
+            {{ data_desc | safe }}
+        </div>
+        {% endif %}
+        
+        {% if dataset_link %}
+        <div class="download-link">
+            <a href="{{ url_for('download_file', filename=dataset_link.split('/')[-1]) }}" class="btn btn-success" download>Download Dataset (CSV)</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
